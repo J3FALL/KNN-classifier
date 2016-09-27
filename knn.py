@@ -52,7 +52,10 @@ plt.scatter(data[:, 0], data[:, 1], color = color_data)
 plt.show()
 
 #get k-cross validation
-test_data, train_data = kFold(data, 10)
+train_data, test_data = kFold(data, 10)
 #print(test_data, train_data)
 #test = np.delete(data, range(0, 4), axis = 0)
 #print(len(test))
+
+
+
