@@ -1,3 +1,5 @@
+import matplotlib.pyplot as plt
+import numpy as np
 def kFold(data, k):
     test_data = []
     train_data = []
@@ -20,8 +22,7 @@ def cart2pol(x, y):
     # return(rho, phi)
     return(phi, rho)
 
-import matplotlib.pyplot as plt
-import numpy as np
+
 data = []
 f = open('chips.txt', 'r')
 for line in f:
@@ -64,8 +65,7 @@ polar_data = np.float32(polar_data)
 pol_plot = plt.subplot(111, projection='polar')
 pol_plot.scatter(polar_data[:, 0], polar_data[:, 1], color = color_data)
 pol_plot.grid(True)
-pol_plot.show()
-
+plt.show()
 #get k-cross validation
 train_data, test_data = kFold(data, 10)
 #print(test_data, train_data)
