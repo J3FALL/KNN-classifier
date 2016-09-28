@@ -14,6 +14,12 @@ def kFold(data, k):
 
     return train_data, test_data
 
+def cart2pol(x, y):
+    rho = np.sqrt(x**2 + y**2)
+    phi = np.arctan2(y, x)
+    # return(rho, phi)
+    return(phi, rho)
+
 import matplotlib.pyplot as plt
 import numpy as np
 data = []
@@ -31,13 +37,13 @@ for x in data[:, 2]:
     color_data.append(color[int(x)])
 
 #normalize
-x_min = min(data[:, 0])
-x_max = max(data[:, 0])
-y_min = min(data[:, 1])
-y_max = max(data[:, 1])
-print(x_min, x_max, y_min, y_max)
-data[:, 0] = [(x - x_min) / (x_max - x_min) for x in data[:, 0]]
-data[:, 1] = [(y - y_min) / (y_max - y_min) for y in data[:, 1]]
+# x_min = min(data[:, 0])
+# x_max = max(data[:, 0])
+# y_min = min(data[:, 1])
+# y_max = max(data[:, 1])
+# print(x_min, x_max, y_min, y_max)
+# data[:, 0] = [(x - x_min) / (x_max - x_min) for x in data[:, 0]]
+# data[:, 1] = [(y - y_min) / (y_max - y_min) for y in data[:, 1]]
 
 np.random.shuffle(data)
 color_data = []
@@ -48,14 +54,20 @@ for x in data[:, 2]:
 #print(color[np.array(data)[:, 2]])
 
 #print data
-plt.scatter(data[:, 0], data[:, 1], color = color_data)
-plt.show()
+# plt.scatter(data[:, 0], data[:, 1], color = color_data)
+# plt.show()
+
+# polar visualization
+polar_data = [list(cart2pol(point[0], point[1])) for point in data]
+polar_data = np.float32(polar_data)
+
+pol_plot = plt.subplot(111, projection='polar')
+pol_plot.scatter(polar_data[:, 0], polar_data[:, 1], color = color_data)
+pol_plot.grid(True)
+pol_plot.show()
 
 #get k-cross validation
 train_data, test_data = kFold(data, 10)
 #print(test_data, train_data)
 #test = np.delete(data, range(0, 4), axis = 0)
 #print(len(test))
-
-
-
