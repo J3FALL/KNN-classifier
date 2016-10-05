@@ -1,5 +1,6 @@
 import matplotlib.pyplot as plt
 import numpy as np
+import math
 def kFold(data, k):
     test_data = []
     train_data = []
@@ -22,6 +23,8 @@ def cart2pol(x, y):
     # return(rho, phi)
     return(phi, rho)
 
+def euDist(a, b):
+    return math.sqrt((a[0] - b[0]) ** 2 + (a[1] - b[1]) ** 2)
 
 data = []
 f = open('chips.txt', 'r')
@@ -71,3 +74,7 @@ train_data, test_data = kFold(data, 10)
 #print(test_data, train_data)
 #test = np.delete(data, range(0, 4), axis = 0)
 #print(len(test))
+
+
+print(test_data[0][0], test_data[0][1])
+print(euDist(test_data[0][0], test_data[0][1]))
