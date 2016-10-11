@@ -26,6 +26,18 @@ def cart2pol(x, y):
 def euDist(a, b):
     return math.sqrt((a[0] - b[0]) ** 2 + (a[1] - b[1]) ** 2)
 
+def classify (train, test, k, classesAmount) :
+    ans = []
+    for testPoint in test:
+        #calculate distances between test point and train points
+        dist = np.array([euDist(testPoint, train[i]) for i in range(len(train))])
+        distIdx = np.argsort(dist)
+        res = [0 for i in range(classesAmount)]
+        for idx in distIdx[0:k]:
+            res[int(train[idx][2])] += 1
+        ans.append(np.argmax(res))
+    return ans
+
 data = []
 f = open('chips.txt', 'r')
 for line in f:
@@ -77,3 +89,8 @@ train_data, test_data = kFold(data, 10)
 
 print(test_data[0][0], test_data[0][1])
 print(euDist(test_data[0][0], test_data[0][1]))
+
+print(classify(train_data[0], test_data[0], 10, 2))
+
+tmp = [int(i[2]) for i in test_data[0]]
+print(tmp)
