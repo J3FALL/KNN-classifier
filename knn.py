@@ -1,6 +1,8 @@
-import matplotlib.pyplot as plt
-import numpy as np
 import math
+import numpy as np
+import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D
+
 def kFold(data, k):
     test_data = []
     train_data = []
@@ -73,14 +75,20 @@ for x in data[:, 2]:
 # plt.scatter(data[:, 0], data[:, 1], color = color_data)
 # plt.show()
 
-# polar visualization
-polar_data = [list(cart2pol(point[0], point[1])) for point in data]
-polar_data = np.float32(polar_data)
+# fig = plt.figure()
+ax = plt.subplot(111, projection='3d')
+z_coords = [vec[0]**2 + vec[1]**2 for _, vec in enumerate(data)]
+ax.scatter(data[:, 0], data[:, 1], z_coords, c = color_data)
 
-pol_plot = plt.subplot(111, projection='polar')
-pol_plot.scatter(polar_data[:, 0], polar_data[:, 1], color = color_data)
-pol_plot.grid(True)
-# plt.show()
+# polar visualization
+# polar_data = [list(cart2pol(point[0], point[1])) for point in data]
+# polar_data = np.float32(polar_data)
+#
+# pol_plot = plt.subplot(111, projection='polar')
+# pol_plot.scatter(polar_data[:, 0], polar_data[:, 1], color = color_data)
+# pol_plot.grid(True)
+
+plt.show()
 #get k-cross validation
 train_data, test_data = kFold(data, 10)
 #print(test_data, train_data)
