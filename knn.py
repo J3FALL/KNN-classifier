@@ -25,14 +25,14 @@ def cart2pol(x, y):
     # return(rho, phi)
     return(phi, rho)
 
-def euDist(a, b):
-    return math.sqrt((a[0] - b[0]) ** 2 + (a[1] - b[1]) ** 2)
+def distance(a, b, m):
+    return math.pow(abs(a[0] - b[0]) ** m + abs(a[1] - b[1]) ** m, 1/m)
 
-def classify (train, test, k, classesAmount) :
+def classify (train, test, k, classesAmount, m) :
     ans = []
     for testPoint in test:
         #calculate distances between test point and train points
-        dist = np.array([euDist(testPoint, train[i]) for i in range(len(train))])
+        dist = np.array([distance(testPoint, train[i], m) for i in range(len(train))])
         distIdx = np.argsort(dist)
         res = [0 for i in range(classesAmount)]
         for idx in distIdx[0:k]:
@@ -92,7 +92,7 @@ for x in data[:, 2]:
 # data[:, 0] = [(x - x_min) / (x_max - x_min) for x in data[:, 0]]
 # data[:, 1] = [(y - y_min) / (y_max - y_min) for y in data[:, 1]]
 
-np.random.shuffle(data)
+#np.random.shuffle(data)
 color_data = []
 for x in data[:, 2]:
     color_data.append(color[int(x)])
@@ -124,11 +124,22 @@ train_data, test_data = kFold(data, 10)
 #test = np.delete(data, range(0, 4), axis = 0)
 #print(len(test))
 
-# print(test_data[0][0], test_data[0][1])
-# print(euDist(test_data[0][0], test_data[0][1]))
 
-classified = classify(train_data[0], test_data[0], 10, 2)
-rc, pc, acc, f1 = measures(classified)
 
-tmp = [int(i[2]) for i in test_data[0]]
-# print(tmp)
+
+rc = pc = acc = f1 = 0.0
+#calculate average measures
+for i in range(len(train_data)):
+    classified = classify(train_data[i], test_data[i], 10, 2, 2)
+    rc_tmp, pc_tmp, acc_tmp, f1_tmp = measures(classified)
+    print(rc_tmp, pc_tmp, acc_tmp, f1_tmp)
+    rc += rc_tmp
+    pc += pc_tmp
+    acc += acc_tmp
+    f1 += acc_tmp
+rc /= len(train_data)
+pc /= len(train_data)
+acc /= len(train_data)
+f1 /= len(train_data)
+
+print(rc, pc, acc, f1)
