@@ -40,6 +40,35 @@ def classify (train, test, k, classesAmount) :
         ans.append(np.argmax(res))
     return ans
 
+def measures (classified_data):
+    # Float so that automatic integer division doesn't fuck up the results
+    tp = tn = fp = fn = 0.0
+    for i in range(len(classified_data)):
+        # if test_data is 1 (1 is truthy here)
+        if test_data[0][i][2]:
+            # t_d is 1, so if c_d is 1 too - we have TP, else - FN
+            if classified_data[i] == test_data[0][i][2]:
+                tp += 1
+            else:
+                fn += 1
+        else:
+            # same deal but TN and FP now
+            if classified_data[i] == test_data[0][i][2]:
+                tn += 1
+            else:
+                fp += 1
+
+    # print(tp, tn, fp, fn)
+
+    positive_ex = tp + fn
+    negative_ex = fp + tn
+    recall = tp / positive_ex
+    precision = tp / (tp + fp)
+
+    accuracy = (tp + tn) / (positive_ex + negative_ex)
+    f1 = 2 * (precision * recall) / (precision + recall)
+    return recall, precision, accuracy, f1
+
 data = []
 f = open('chips.txt', 'r')
 for line in f:
@@ -98,33 +127,8 @@ train_data, test_data = kFold(data, 10)
 # print(test_data[0][0], test_data[0][1])
 # print(euDist(test_data[0][0], test_data[0][1]))
 
-classified_data = classify(train_data[0], test_data[0], 10, 2)
-
-# Float so that automatic integer division doesn't fuck up the results
-tp = tn = fp = fn = 0.0
-
-for i in range(len(classified_data)):
-    # if test_data is 1 (1 is truthy here)
-    if test_data[0][i][2]:
-        # t_d is 1, so if c_d is 1 too - we have TP, else - FN
-        if classified_data[i] == test_data[0][i][2]: tp += 1
-        else: fn += 1
-    else:
-        # same deal but TN and FP now
-        if classified_data[i] == test_data[0][i][2]: tn += 1
-        else: fp += 1
-
-# print(tp, tn, fp, fn)
-
-positive_ex = tp + fn
-negative_ex = fp + tn
-recall = tp / positive_ex
-precision = tp / (tp + fp)
-
-accuracy = (tp + tn) / (positive_ex + negative_ex)
-f1 = 2 * (precision * recall) / (precision + recall)
-
-print(recall, precision, accuracy, f1)
+classified = classify(train_data[0], test_data[0], 10, 2)
+rc, pc, acc, f1 = measures(classified)
 
 tmp = [int(i[2]) for i in test_data[0]]
 # print(tmp)

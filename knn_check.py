@@ -67,7 +67,7 @@ def predict(testDataX, trainDataX, pow, k, trainDataY):
         #print(distances_index)
         for i in range(k):
             result[int(trainDataY[distances_index[i]][0])] += 1
-            print(result)
+            #print(result)
         ans.append(np.argmax(result))
     return ans
 
