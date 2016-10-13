@@ -7,15 +7,11 @@ def kFold(data, k):
     test_data = []
     train_data = []
 
-    i = 0
-    length = (int) (len(data) / k)
-
-    while i < k:
-        temp_data = data
-        test_data.append(temp_data[i * length : (i + 1) * length])
-        train_data.append(np.delete(temp_data, range(i * length, (i + 1) * length), axis = 0))
-        i += 1
-
+    for i in range(k):
+        training_idx = np.random.randint(data.shape[0], size=20)
+        test_idx = np.random.randint(data.shape[0], size=80)
+        train_data.append(data[training_idx,:])
+        test_data.append(data[test_idx,:])
 
     return train_data, test_data
 
@@ -86,7 +82,7 @@ def average_metrics(test_data, train_data, neighbours, m):
         rc += rc_tmp
         pc += pc_tmp
         acc += acc_tmp
-        f1 += acc_tmp
+        f1 += f1_tmp
 
     rc /= len(train_data)
     pc /= len(train_data)
@@ -132,8 +128,6 @@ pol_plot = plt.subplot(111, projection='polar')
 pol_plot.scatter(polar_data[:, 0], polar_data[:, 1], color = color_data)
 pol_plot.grid(True)
 
-plt.show()
-
 #normalize
 x_min = min(data[:, 0])
 x_max = max(data[:, 0])
@@ -143,17 +137,31 @@ print(x_min, x_max, y_min, y_max)
 data[:, 0] = [(x - x_min) / (x_max - x_min) for x in data[:, 0]]
 data[:, 1] = [(y - y_min) / (y_max - y_min) for y in data[:, 1]]
 
-folds_range = range(10, 119, 5)
-k_range = range(1, 20, 2)
+# folds_range = range(10, 119, 5)
+folds_range = range(5, 10)
+k_range = range(5, 20)
 m_range = range(2, 5)
 max_accuracy = 0
+max_f1 = 0
 
 for folds in folds_range:
     train_data, test_data = kFold(data, folds)
     for k in k_range:
         for m in m_range:
             rc, pc, acc, f1 = average_metrics(train_data, test_data, k, m)
+
+            if (acc > max_accuracy) and (f1 > max_f1):
+                best_folds = folds
+                best_k = k
+                best_m = m
+
             max_accuracy = max(max_accuracy, acc)
+            max_f1 = max(max_f1, f1)
+
             print folds, k, m
             print(rc, pc, acc, f1)
-print max_accuracy
+
+print "Best values at"
+print "folds: ", best_folds, "k: ", best_k, "m: ", best_m
+print max_accuracy, max_f1
+plt.show()
